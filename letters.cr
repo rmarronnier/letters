@@ -1,7 +1,15 @@
-content = File.read("1.txt").split("====================", remove_empty: true)
+require "csv"
 
-content.each do |t|
+corpum = Dir.open("corpum")
 
-puts t + "*******"
+csv = CSV.new("id, content, author", headers: true)
 
+corpum.each do |author|
+id = 1
+corpus = author.read.split("====================", remove_empty: true)
+corpus.each do |letter|
+csv.row id, letter, author
+id = id + 1
 end
+end
+File.write("letters.csv", csv)
