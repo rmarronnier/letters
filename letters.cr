@@ -1,4 +1,5 @@
 require "csv"
+require "json"
 
 corpum = Dir.open("corpum")
 Dir.cd("corpum")
@@ -23,7 +24,24 @@ letters = CSV.build do |csv|
   end
 end
 
-File.write("letters.csv", letters)
+
+
+
+#File.write("letters.csv", letters)
+
+Dir.cd("..")
+profiles = Dir.open("profiles")
+Dir.cd("profiles")
+json_array = Array(Hash(String, (String|Int32|Bool))).new
+profiles.each_child do |author|
+  puts author
+  body = File.read(author)
+  id = 1
+  json_hash = { "id"=> id, "email" => author + "@famous.com", "password" => "password", "name" => author, "role" => "bot", "body" => body, "published" => true }
+  id = id + 1
+  json_array << json_hash
+end
+File.write("authors.json", json_array.to_json)
 
 # corpum.each_child do |author|
 # content = File.read(author)
