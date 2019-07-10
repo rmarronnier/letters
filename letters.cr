@@ -1,5 +1,6 @@
 require "csv"
 require "json"
+require "cadmium"
 
 corpum = Dir.open("corpum")
 Dir.cd("corpum")
@@ -14,7 +15,9 @@ corpum.each_child do |author|
   content = File.read(author)
   corpus = content.split("====================", remove_empty: true)
   corpus.each do |letter|
-    json_hash = { "id" => id, "content" => letter, "user_id" => user_id }
+    sentiment = Cadmium.sentiment
+    readability = Cadmium.readability.new(letter).flesch
+    json_hash = { "id" => id, "body" => letter, "user_id" => user_id, "readability_score" => readability.to_i, "sentiment_score" => letter.sentiment["score"].to_i }
   json_array << json_hash
   id = id + 1
   end
